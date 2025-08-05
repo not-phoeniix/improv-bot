@@ -1,6 +1,7 @@
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const fs = require("node:fs");
 const commands = require("./commands_manager.js");
+const dataManager = require("./data_manager.js");
 require("dotenv").config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -34,6 +35,12 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 
     try {
+        if (interaction.guildId) {
+            dataManager.setupGuild(interaction.guildId);
+        } else {
+            console.error("Cannot set up guild! guild ID is not valid!");
+        }
+
         await command.execute(interaction);
     } catch (err) {
         console.error(err);

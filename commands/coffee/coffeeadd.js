@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const fs = require("node:fs");
+const dataManager = require("../../data_manager.js");
 
 const data = new SlashCommandBuilder()
     .setName("coffeeadd")
@@ -12,16 +12,13 @@ const data = new SlashCommandBuilder()
     });
 
 async function execute(interaction) {
-    const data = require("../../data/coffee.json");
+    const data = dataManager.getData("coffee.json", interaction);
     const prompt = interaction.options.getString("prompt");
 
     if (data.prompts.findIndex(v => v == prompt) == -1) {
         data.prompts.push(prompt);
 
-        console.log("backing up old coffee file...");
-        fs.copyFileSync("./data/coffee.json", "./data/coffee.json.bak");
-        console.log("writing new coffee file...");
-        fs.writeFileSync("./data/coffee.json", JSON.stringify(data, null, 4));
+        dataManager.setData("coffee.json", data, interaction);
 
         await interaction.reply(`Added prompt **${prompt}**!`);
 
