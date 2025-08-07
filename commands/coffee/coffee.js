@@ -3,13 +3,22 @@ const dataManager = require("../../data_manager.js");
 
 const data = new SlashCommandBuilder()
     .setName("coffee")
-    .setDescription("Picks a new random coffee prompt !!");
+    .setDescription("Answers the current coffee prompt with a pun !!")
+    .addStringOption(option => {
+        option.setName("pun");
+        option.setDescription("Pun to answer current prompt with");
+        option.setRequired(true);
+        return option;
+    });
 
 async function execute(interaction) {
-    const { prompts } = dataManager.getData("coffee.json", interaction);
+    const { prevPrompt } = dataManager.getData("coffee.json", interaction);
+    const pun = interaction.options.getString("pun");
 
-    const idx = Math.floor(Math.random() * prompts.length);
-    await interaction.reply(`i like my lovers like i like my **${prompts[idx]}**...`);
+    await interaction.reply(
+        `i like my lovers like i like my **${prevPrompt}**...\n` +
+        `> "${pun}" ~ <@${interaction.member.id}>`
+    );
 }
 
 module.exports = { data, execute }
