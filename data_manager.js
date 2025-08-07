@@ -21,7 +21,8 @@ function getData(file, interaction) {
     const filePath = `./data/${interaction.guildId}/${file}`;
 
     if (fs.existsSync(filePath)) {
-        return JSON.parse(JSON.stringify(require(filePath)));
+        const jsonData = fs.readFileSync(filePath);
+        return JSON.parse(jsonData);
     }
 
     throw new Error(`Data \"${file}\" from guild \"${interaction.guildId}\" not found!`);
